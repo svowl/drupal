@@ -1,5 +1,4 @@
 <?php
-// $Id: dblog.admin.inc,v 1.43 2011/01/13 00:41:12 dries Exp $
 
 /**
  * @file

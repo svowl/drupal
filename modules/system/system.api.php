@@ -1,5 +1,4 @@
 <?php
-// $Id: system.api.php,v 1.227 2011/01/28 07:51:09 webchick Exp $
 
 /**
  * @file
@@ -824,7 +823,7 @@ function hook_css_alter(&$css) {
 }
 
 /**
- * Alter the commands that are sent to the user through the AJAX framework.
+ * Alter the commands that are sent to the user through the Ajax framework.
  *
  * @param $commands
  *   An array of all commands that will be sent to the user.
@@ -2419,8 +2418,8 @@ function hook_modules_disabled($modules) {
  * modules a chance to perform actions when a module is uninstalled, whereas
  * hook_uninstall() is only called on the module actually being uninstalled.
  *
- * It is recommended that you implement this module if your module
- * stores data that may have been set by other modules.
+ * It is recommended that you implement this hook if your module stores
+ * data that may have been set by other modules.
  *
  * @param $modules
  *   An array of the uninstalled modules.
@@ -2552,7 +2551,7 @@ function hook_file_load($files) {
  *
  * @see file_validate()
  */
-function hook_file_validate(&$file) {
+function hook_file_validate($file) {
   $errors = array();
 
   if (empty($file->filename)) {
@@ -3894,7 +3893,7 @@ function hook_date_formats_alter(&$formats) {
 function hook_page_delivery_callback_alter(&$callback) {
   // jQuery sets a HTTP_X_REQUESTED_WITH header of 'XMLHttpRequest'.
   // If a page would normally be delivered as an html page, and it is called
-  // from jQuery, deliver it instead as an AJAX response.
+  // from jQuery, deliver it instead as an Ajax response.
   if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' && $callback == 'drupal_deliver_html_page') {
     $callback = 'ajax_deliver';
   }

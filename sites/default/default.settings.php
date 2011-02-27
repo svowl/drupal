@@ -1,5 +1,4 @@
 <?php
-// $Id: default.settings.php,v 1.52 2011/01/28 07:03:57 webchick Exp $
 
 /**
  * @file

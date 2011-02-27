@@ -1,5 +1,4 @@
 <?php
-// $Id: registry.inc,v 1.35 2011/01/11 13:33:18 dries Exp $
 
 /**
  * @file

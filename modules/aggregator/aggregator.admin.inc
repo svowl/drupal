@@ -1,5 +1,4 @@
 <?php
-// $Id: aggregator.admin.inc,v 1.55 2011/01/28 07:47:28 webchick Exp $
 
 /**
  * @file

@@ -1,9 +1,8 @@
 <?php
-// $Id: aggregator.test,v 1.48 2011/01/12 23:20:33 dries Exp $
 
 /**
  * @file
- * Creates tests for aggregator module.
+ * Tests for aggregator.module.
  */
 
 class AggregatorTestCase extends DrupalWebTestCase {

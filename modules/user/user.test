@@ -1,5 +1,9 @@
 <?php
-// $Id: user.test,v 1.112 2011/01/29 10:08:45 webchick Exp $
+
+/**
+ * @file
+ * Tests for user.module.
+ */
 
 class UserRegistrationTestCase extends DrupalWebTestCase {
   public static function getInfo() {

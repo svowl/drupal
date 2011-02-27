@@ -1,5 +1,4 @@
 <?php
-// $Id: book.pages.inc,v 1.28 2011/01/28 08:04:59 webchick Exp $
 
 /**
  * @file

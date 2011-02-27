@@ -1,5 +1,4 @@
 <?php
-// $Id: field_test.storage.inc,v 1.9 2011/01/18 18:25:17 dries Exp $
 
 /**
  * @file

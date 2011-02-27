@@ -1,5 +1,4 @@
 <?php
-// $Id: template.php,v 1.26 2011/01/28 07:17:18 webchick Exp $
 
 /**
  * Override or insert variables into the maintenance page template.

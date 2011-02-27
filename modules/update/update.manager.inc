@@ -1,5 +1,4 @@
 <?php
-// $Id: update.manager.inc,v 1.35 2011/01/28 07:20:50 webchick Exp $
 
 /**
  * @file

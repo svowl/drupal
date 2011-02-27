@@ -1,9 +1,8 @@
 <?php
-// $Id: list.test,v 1.12 2011/01/18 18:25:17 dries Exp $
 
 /**
  * @file
- * Tests for the 'List' field types.
+ * Tests for list.module.
  */
 
 /**

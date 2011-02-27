@@ -1,5 +1,9 @@
 <?php
-// $Id: book.test,v 1.29 2011/01/28 08:04:59 webchick Exp $
+
+/**
+ * @file
+ * Tests for book.module.
+ */
 
 class BookTestCase extends DrupalWebTestCase {
   protected $book;

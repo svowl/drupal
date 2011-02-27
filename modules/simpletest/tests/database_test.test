@@ -1,5 +1,4 @@
 <?php
-// $Id: database_test.test,v 1.111 2011/01/10 18:04:23 webchick Exp $
 
 /**
  * Dummy class for fetching into a class.

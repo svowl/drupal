@@ -1,5 +1,4 @@
 <?php
-// $Id: field.default.inc,v 1.43 2011/01/28 07:38:46 webchick Exp $
 
 /**
  * @file

@@ -1,5 +1,4 @@
 <?php
-// $Id: openid.inc,v 1.38 2011/01/13 01:12:18 dries Exp $
 
 /**
  * @file
@@ -687,7 +686,9 @@ function openid_extract_ax_values($values, $uris) {
  * Determine the available math library GMP vs. BCMath, favouring GMP for performance.
  */
 function _openid_get_math_library() {
-  $library = &drupal_static(__FUNCTION__);
+  // Not drupal_static(), because a function is not going to disappear and
+  // change the output of this under any circumstances.
+  static $library;
 
   if (empty($library)) {
     if (function_exists('gmp_add')) {

@@ -1,5 +1,4 @@
 <?php
-// $Id: image.effects.inc,v 1.6 2011/01/24 12:57:28 dries Exp $
 
 /**
  * @file

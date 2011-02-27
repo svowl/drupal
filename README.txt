@@ -1,4 +1,3 @@
-// $Id: README.txt,v 1.2 2011/01/28 06:53:01 webchick Exp $
 
 CONTENTS OF THIS FILE
 ---------------------

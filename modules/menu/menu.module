@@ -1,5 +1,4 @@
 <?php
-// $Id: menu.module,v 1.233 2010/09/24 00:37:43 dries Exp $
 
 /**
  * @file
@@ -352,7 +351,7 @@ function menu_parent_options($menus, $item) {
 
 /**
  * Page callback.
- * Get all available menus and menu items as Javascript array.
+ * Get all the available menus and menu items as a JavaScript array.
  */
 function menu_parent_options_js() {
   $available_menus = array();
