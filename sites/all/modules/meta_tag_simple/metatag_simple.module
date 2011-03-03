@@ -1,0 +1,263 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * A module that creates a user interface in the node edit form for a simple 
+ * meta tag.
+ * 
+ * This version of the module supports three meta tags: description, copyright,
+ * and keywords. Others will be added in future interations.
+ */
+
+/**
+ * Implements hook_help.
+ */
+function metatag_simple_help($path, $arg) {
+  if ($path == 'admin/help#metatag_simple') {
+    return t('To set meta tags for your nodes, enable this function in the target content type (Structure > Content types).');
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ * 
+ * This function adds the meta tags option to content types.  If enabled, it  
+ * adds the administrative interface to the node edit form.
+ */
+function metatag_simple_form_alter(&$form, $form_state, $form_id) {
+  //Adds radio buttons to content type to enable metatags.
+  if ($form_id == 'node_type_form') {
+    $form['metatags'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Meta tags'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#group' => 'additional_settings',
+      '#weight' => .01,      
+    );
+    
+    $form['metatags']['metatag_simple'] = array(
+      '#type' => 'radios',
+      '#title' => t('Meta tags'),
+      '#default_value' => variable_get('metatag_simple_' . $form['#node_type']->type, 'DRUPAL_FALSE'),
+      '#options' => array(FALSE => t('Disabled'), TRUE => t('Enabled')),
+      '#description' => t('Enable meta tags in this content type.')
+    );
+  }
+  //Check to see if this is node edit form, and if so, if meta tags are 
+  //enabled. If so, add fields for tag content.
+  elseif (isset($form['type']) && isset($form['#node']) && $form['type']['#value'] . '_node_form' == $form_id) {
+    $node = $form['#node'];
+    if (variable_get('metatag_simple_' . $form['type']['#value'], FALSE)) {
+      $form['metatagsnode'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Meta tags'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        '#group' => 'additional_settings',
+        '#weight' => 0,
+      );
+
+      $form['metatagsnode']['metatag_simple_meta_description'] = array(
+        '#type' => 'textarea',
+        '#rows' => 4,
+        '#title' => t('Description'),
+        '#default_value' => isset($node->metatag_simple_meta_description) ? $node->metatag_simple_meta_description : '',
+        '#description' => t('A short description of this page. Used by search engines and other sites to describe it. A major search engine confirms that a good description can improve clickthrough rate. Limit length to around 155 characters, plain text, no HTML.'),
+      );
+
+      
+      $form['metatagsnode']['metatag_simple_meta_copyright'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Copyright'),
+        '#default_value' => isset($node->metatag_simple_meta_copyright) ? $node->metatag_simple_meta_copyright : '',
+        '#description' => t('Short copyright text.'),
+        '#maxlength' => 120,
+      );
+      
+      $form['metatagsnode']['metatag_simple_meta_keywords'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Keywords'),
+        '#default_value' => isset($node->metatag_simple_meta_keywords) ? $node->metatag_simple_meta_keywords : '',
+        '#description' => t('Comma separated list of keywords. A major search engine is on record stating that they do not use keywords in search rankings.'),
+        '#maxlength' => 120,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_node_load().
+ * 
+ * Loads previously saved meta tags if available for any nodes in the 
+ * argument list. 
+ */
+function metatag_simple_node_load($nodes, $form) {
+  foreach ($nodes as $node) {
+    if (variable_get('metatag_simple_' . $node->type, FALSE)) {
+      $nids[] = $node->nid;
+    }
+  }
+  //Check if function should load tags for any node.
+  if (!isset($nids) || !count($nids)) {
+    return;
+  }
+
+  $result = db_select('metatag_simple', 'e')
+  ->fields('e', array('nid', 'content', ))
+  ->condition('name', 'description')
+  ->where('e.nid IN (:nids)', array(':nids' => $nids))
+  ->execute();  
+
+  foreach ($result as $record) {
+    $nodes[$record->nid]->metatag_simple_meta_description = $record->content;
+  }  
+   
+  $result = db_select('metatag_simple', 'e')
+  ->fields('e', array('nid', 'content', ))
+  ->condition('name', 'copyright')
+  ->where('e.nid IN (:nids)', array(':nids' => $nids))
+  ->execute();
+
+  foreach ($result as $record) {    
+    $nodes[$record->nid]->metatag_simple_meta_copyright = $record->content;
+  }
+  
+  $result = db_select('metatag_simple', 'e')
+  ->fields('e', array('nid', 'content', ))
+  ->condition('name', 'keywords')
+  ->where('e.nid IN (:nids)', array(':nids' => $nids))
+  ->execute();
+  
+  foreach ($result as $record) {
+    $nodes[$record->nid]->metatag_simple_meta_keywords = $record->content;
+  }
+}
+
+
+/**
+ * Implements hook_node_insert().
+ * 
+ */
+function metatag_simple_node_insert($node) {
+  if (variable_get('metatag_simple_' . $node->type, FALSE)) {
+  $values = array(
+    array(
+      'nid' => $node->nid,
+      'name' => 'description',
+      'content' => $node->metatag_simple_meta_description,     
+    ),
+    array(
+      'nid' => $node->nid,
+      'name' => 'copyright',
+      'content' => $node->metatag_simple_meta_copyright,
+    ),
+    array(
+      'nid' => $node->nid,
+      'name' => 'keywords',
+      'content' => $node->metatag_simple_meta_keywords,
+    ),
+  );
+  $query = db_insert('metatag_simple')->fields(array('nid', 'name', 'content'));
+  foreach ($values as $record) {
+    $query->values($record);
+  }
+  $query->execute(); 
+  }       
+}
+
+/**
+ * Implements hook_node_delete().
+ * 
+ */
+function metatag_simple_node_delete($node) {
+  db_delete('metatag_simple')
+    ->condition('nid', $node->nid)
+    ->execute();
+}
+
+/**
+ * Implements hook_node_update().
+ * 
+ * Check to see if node has meta tags db fields. If so, update. If not, insert.
+ */
+function metatag_simple_node_update($node) {
+  if (variable_get('metatag_simple_' . $node->type, FALSE)) {
+    $result = db_select('metatag_simple', 'e')
+      ->fields('e', array('name', 'content', ))
+      ->condition('name', 'description')
+      ->where('e.nid = (:nid)', array(':nid' => $node->nid))
+      ->execute()->fetchField();
+
+    if ($result) {
+      db_update('metatag_simple')
+        ->fields(array('content' => $node->metatag_simple_meta_description))
+        ->condition('nid', $node->nid)
+        ->condition('name', 'description')
+        ->execute(); 
+      db_update('metatag_simple')
+        ->fields(array('content' => $node->metatag_simple_meta_copyright))
+        ->condition('nid', $node->nid)
+        ->condition('name', 'copyright')
+        ->execute();
+      db_update('metatag_simple')
+        ->fields(array('content' => $node->metatag_simple_meta_keywords))
+        ->condition('nid', $node->nid)
+        ->condition('name', 'keywords')
+        ->execute();         
+    }
+    else {
+      metatag_simple_node_insert($node);
+    }    
+  }
+}
+
+/**
+ * Implements hook_preprocess_page().
+ *
+ * This function pulls the data from the db, puts it into arrays for html, 
+ * and sends it to the headers to be rendered as meta tags.
+ */
+function metatag_simple_preprocess_page(&$variables) {
+  $node = menu_get_object();
+    if (!is_null ($node)) {
+      $nid = $node->nid;
+    } 
+    else {
+      return;
+    }
+
+  $names = array(
+    'description',
+    'copyright',
+    'keywords',
+  );
+
+  foreach ($names as $n){   
+  if (variable_get('metatag_simple_' . $node->type, FALSE)) {
+    $result = db_select('metatag_simple', 'e')
+      ->fields('e', array('nid', 'name', 'content', ))
+      ->condition('name', $n)
+      ->condition('nid', $nid)
+      ->execute();
+
+    foreach ($result as $record) {
+      if ($record->content) {    
+        $element = array(
+          '#tag' => 'meta',
+          '#attributes' => array(
+            'name' => $n,
+            'content' => $record->content, 
+          )
+        );
+      drupal_add_html_head($element, 'metatag_simple_' . $n);
+      }
+    }    
+  } 
+  else{
+    return; 
+  } 
+  } 
+}
+

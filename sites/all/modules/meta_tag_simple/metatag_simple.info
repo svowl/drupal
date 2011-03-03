@@ -1,0 +1,10 @@
+;$Id$
+
+name = "Meta tag simple"
+description = "Creates user interface in the node edit screen for meta tags."
+
+core = 7.x
+
+files[] = metatag_simple.module
+
+

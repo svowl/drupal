@@ -1,0 +1,64 @@
+<?php 
+// $Id$
+
+/**
+ * @file
+ * Install, update and uninstall functions for the 'Meta tag simple' module.
+ * 
+ */
+
+/**
+ * Implements hook_install().
+ */
+function metatag_simple_install() {
+}
+ 
+ /**
+  * Implements hook_uninstall().
+  */
+function metatag_simple_uninstall() {
+}
+
+/**
+ * Implements hook_schema().
+ */
+function metatag_simple_schema() {
+  $schema['metatag_simple'] = array(
+    'description' => 'Stores information to be used in meta tags.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'Node ID that includes metatags.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0     
+      ),
+      'metaid' => array(
+        'description' => 'Primary key.', 
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'Meta tag name.',
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'default' => ''        
+      ),
+      'content' => array(
+        'description' => 'Meta tag content.',
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('metaid'),
+    'indexes' => array(
+      'nid' => array('nid'),
+    ),
+  );
+  
+  return $schema;
+}
+ 
+   
