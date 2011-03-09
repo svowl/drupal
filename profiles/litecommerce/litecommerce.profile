@@ -403,6 +403,10 @@ function litecommerce_software_install(&$install_state) {
             'message' => st('Building cache. Pass 2'),
         );
         $steps[] = array(
+            'function' => 'doBuildCache',
+            'message' => st('Building cache. Pass 3'),
+        );
+        $steps[] = array(
             'function' => '_litecommerce_software_installation_postconfigure',
             'message' => st('LiteCommerce installation complete'),
         );
