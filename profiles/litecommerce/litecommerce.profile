@@ -542,22 +542,23 @@ function litecommerce_form_install_configure_form_submit($form, &$form_state) {
 
     variable_set('lc_setup_params', $params);
 
-    if (_litecommerce_include_lc_files()) {
+    // Update user with specified data
+    $account = user_load(1);
 
-        ob_start();
-        $result = doCreateAdminAccount($params);
-        $output = ob_get_contents();
-        ob_end_clean();
-    }
+    $edit = array(
+        'uid' => 1,
+        'mail'   => $params['login'],
+        'roles'  => array(
+            DRUPAL_AUTHENTICATED_RID => true,
+            variable_get('user_admin_role') => true,
+        )
+    );
 
-    if (false === $result) {
-        drupal_set_message(st('Creation of LiteCommerce administrator account failed. <br />' . $output), 'error');
-    
-    } else {
-        // Update LiteCommerce admin profile with additional data
-        db_query('UPDATE xlite_profiles SET cms_profile_id = :cms_profile_id, cms_name = :cms_name WHERE login = :login AND access_level = :access_level', array('cms_profile_id' => 1, 'cms_name' => '____DRUPAL____', 'login' => $params['login'], 'access_level' => 100));
-    }
+    $account->passwd = $params['password'];
 
+    user_save($account);
+
+    // Reset service variables which were used during installation process
     foreach(array('lc_skip_installation', 'is_litecommerce_installed') as $var) {
         variable_set($var, null);
     }
