@@ -486,15 +486,7 @@ function litecommerce_install()
         ->fields(array('rid' => DRUPAL_AUTHENTICATED_RID, 'permission' => 'access user contact forms', 'module' => 'contact'))
         ->execute();
 
-/*
-    // Create a Home link in the main menu.
-    $item = array(
-        'link_title' => 'Home',
-        'link_path' => '<front>',
-        'menu_name' => 'main-menu',
-    );
-    menu_link_save($item);
- */
+
     _litecommerce_preconfigure_menu_links();
 
     // Update the menu router information.
