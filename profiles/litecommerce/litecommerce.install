@@ -803,9 +803,9 @@ function _litecommerce_preconfigure_menu_links()
 
     $menu_links[] = array(
         'menu_name'   => 'secondary-menu',
-        'link_path'   => sprintf('node/%d', $lc_nodes_values['terms-of-service']['nid']),
+        'link_path'   => sprintf('node/%d', $lc_nodes_values['terms-and-conditions']['nid']),
         'router_path' => 'node/%',
-        'link_title'  => 'Terms of Service',
+        'link_title'  => 'Terms & Conditions',
         'weight'      => 10,
     );
 
@@ -859,20 +859,20 @@ function _litecommerce_preconfigure_node()
     global $lc_nodes_values;
 
     $lc_nodes_values = array(
-        // 'Terms of Service' page node
-        'terms-of-service' => array(
+        // 'Terms and Conditions' page node
+        'terms-and-conditions' => array(
             'node' => array(
-                'title' => 'Terms of Service',
+                'title' => 'Terms & Conditions',
                 'body'  => array(
                     LANGUAGE_NONE => array(
                         array(
-                            'value' => 'Sample of Terms Service',
+                            'value' => 'Sample of Terms and Conditions',
                         ),
                     ),
                 ),
             ),
             'url_alias' => array(
-                'alias' => 'terms-of-service.html',
+                'alias' => 'terms-and-conditions.html',
             ),
         ),
         // 'Privacy Policy' page node
