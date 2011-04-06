@@ -35,6 +35,14 @@ $conf['theme_settings'] = array(
     'logo_path' => 'profiles/litecommerce/lc_logo.png',
 );
 
+if (version_compare(phpversion(), '5.3.0') < 0) {
+    die('LiteCommerce CMS cannot start on PHP version earlier than 5.3.0 (' . phpversion(). ' is currently used)');
+}
+
+// Increase memoty_limit option value
+_litecommerce_install_increase_memory_limit(64);
+
+
 /**
  * Returns the array of Ecommerce CMS specific tasks
  */
@@ -266,7 +274,7 @@ function litecommerce_install_settings_form_validate($form, &$form_state) {
 
     $drupal_prefix = trim($form_state['values']['mysql']['db_prefix']);
 
-    $xlite_prefix = \Includes\Utils\ConfigParser::getOptions(array('database_details', 'table_prefix'));
+    $xlite_prefix = get_xlite_tables_prefix();
 
     if ($drupal_prefix == $xlite_prefix) {
         form_set_error('mysql][db_prefix', st('A prefix for the Drupal tables cannot be :db_prefix as it is reserved for the LiteCommerce tables.', array(':db_prefix' => $xlite_prefix)));
@@ -674,5 +682,32 @@ function _litecommerce_get_setup_params() {
     }
 
     return $params;
+}
+
+/**
+ * Increase memory_limit value
+ */
+function _litecommerce_install_increase_memory_limit($newValue)
+{
+    $currentValue = @ini_get('memory_limit');
+
+    if (!empty($currentValue)) {
+
+        preg_match('/(\d+)(.?)/i', $currentValue, $match);
+
+        if ('M' == strtoupper($match[2])) {
+            $currentValue = intval($match[1]);
+
+        } elseif ('G' == strtoupper($match[2])) {
+            $currentValue = $newValue;
+
+        } else {
+            $currentValue = 0;
+        }
+    }
+
+    if (intval($newValue) > intval($currentValue)) {
+        @ini_set('memory_limit', sprintf('%dM', $newValue));
+    }
 }
 
