@@ -414,10 +414,6 @@ function litecommerce_software_install(&$install_state) {
             'function' => 'doBuildCache',
             'message' => st('Building cache. Pass 3'),
         );
-        $steps[] = array(
-            'function' => '_litecommerce_software_installation_postconfigure',
-            'message' => st('LiteCommerce installation complete'),
-        );
 
         $operations = array();
 
@@ -479,22 +475,6 @@ function _litecommerce_software_install_batch($step, &$context) {
             $context['message'] = $step['message'];
         }
     }
-}
-
-/**
- * Performs the final actions of LiteCommerce installation process
- *
- * Updates an administrator profile with the specific Drupal data
- * and inserts the option 'drupal_root_url' to the LC config table
- */
-function _litecommerce_software_installation_postconfigure() {
-
-    $result = true;
-
-    // Insert Drupal URL option into the xlite_config
-    db_query('UPDATE xlite_config SET value = :value WHERE name = :name', array(':name' => 'drupal_root_url', ':value' => _litecommerce_detect_drupal_baseurl()));
-
-    return $result;
 }
 
 /**
@@ -671,7 +651,7 @@ function _litecommerce_get_setup_params() {
 
             $params = $dbParams;
 
-            $url = parse_url(_litecommerce_detect_drupal_baseurl() . '/modules/lc_connector/litecommerce');
+            $url = parse_url(lc_connector_detect_drupal_baseurl() . '/modules/lc_connector/litecommerce');
             $params['xlite_http_host'] = $url['host'] . (!empty($url['port']) ? ':' . $url['port'] : '');
             $params['xlite_web_dir'] = $url['path'];
         }
@@ -710,19 +690,3 @@ function _litecommerce_install_increase_memory_limit($newValue)
         @ini_set('memory_limit', sprintf('%dM', $newValue));
     }
 }
-
-/**
- * Returns Drupal URL (original drupal_detect_baseurl() corrected to support aliases)
- */
-function _litecommerce_detect_drupal_baseurl()
-{
-    $url = drupal_detect_baseurl();
-
-    if (!empty($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != $_SERVER['SERVER_NAME']) {
-        $parsedUrl = parse_url($url);
-        $url = str_replace($parsedUrl['host'], $_SERVER['HTTP_HOST'], $url);
-    }
-
-    return $url;
-}
-
