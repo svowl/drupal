@@ -729,6 +729,17 @@ function install_verify_requirements(&$install_state) {
   // Verify existence of all required modules.
   $requirements += drupal_verify_profile($install_state);
 
+  // [DEV_CODE]: Check if LiteCommerce is installed
+  if (REQUIREMENT_WARNING != $requirements['lc_already_installed']['severity']) {
+      $requirements['lc_already_installed']['severity'] = REQUIREMENT_ERROR;
+      foreach($requirements as $key => $data) {
+          if ('lc_already_installed' != $key && isset($data['description']) && preg_match('/^LiteCommerce:/', $data['description'])) {
+            unset($requirements[$key]);
+          }
+      }
+  }
+  // [/DEV_CODE]
+
   // Check the severity of the requirements reported.
   $severity = drupal_requirements_severity($requirements);
 
