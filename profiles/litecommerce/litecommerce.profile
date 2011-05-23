@@ -142,15 +142,15 @@ function litecommerce_license_form($form, &$form_state, &$install_state) {
 
 <br />
 
-This package contains the following parts distributed under the <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="new">http://www.gnu.org/licenses/gpl-2.0.html</a> ("GNU General Public License v.2.0"): <br />
+This package contains the following parts distributed under the <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="new">GPL v2.0</a> ("GNU General Public License v.2.0"): <br />
 &nbsp;&nbsp;- Drupal 7 <br />
 &nbsp;&nbsp;- additional Drupal modules that may be useful for most e-commerce websites <br />
-&nbsp;&nbsp;- theme developed by <a href="http://www.qtmsoft.com/" target="new">http://www.qtmsoft.com</a> <br />
-&nbsp;&nbsp;- LiteCommerce Connector module developed by <a href="http://www.qtmsoft.com/" target="new">http://www.qtmsoft.com</a> <br />
+&nbsp;&nbsp;- theme developed by <a href="http://www.cdev.ru/" target="new">Creative Development LLC</a> <br />
+&nbsp;&nbsp;- LiteCommerce Connector module developed by <a href="http://www.cdev.ru/" target="new">Creative Development LLC</a> <br />
 
 <br />
 
-Also, this package installs <a href="http://www.litecommerce.com/" target="new">http://www.litecommerce.com</a> e-commerce software, distributed under the <a href="http://opensource.org/licenses/osl-3.0.php" target="new">http://opensource.org/licenses/osl-3.0.php</a> ("Open Software License"). LiteCommerce 3 is not a part of Drupal and can be downloaded, installed and used as a separate web application for building e-commerce websites.
+Also, this package installs <a href="http://www.litecommerce.com/" target="new">LiteCommerce 3</a> e-commerce software, distributed under the <a href="http://opensource.org/licenses/osl-3.0.php" target="new">OSL 3.0</a> ("Open Software License"). LiteCommerce 3 is not a part of Drupal and can be downloaded, installed and used as a separate web application for building e-commerce websites.
 
 <br /><br />
 
