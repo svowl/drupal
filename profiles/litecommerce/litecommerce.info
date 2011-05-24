@@ -1,4 +1,3 @@
-; $Id$
 name = Ecommerce CMS
 description = Select this profile to enable the Drupal functionality as well as the LiteCommerce functionality and a new Drupal theme supporting LC3 widgets.
 distribution_name = Ecommerce CMS
