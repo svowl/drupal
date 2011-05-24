@@ -10,7 +10,6 @@
  * @author    Creative Development LLC <info@cdev.ru>
  * @copyright Copyright (c) 2010 Creative Development LLC <info@cdev.ru>. All rights reserved
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
- * @version   SVN: $Id: Install.php 4959 2011-01-23 18:56:36Z vvs $
  * @link      http://www.litecommerce.com/
  * @see       ____file_see____
  * @since     1.0.0
@@ -228,8 +227,10 @@ abstract class LCConnector_Install extends LCConnector_Abstract
         if (isLiteCommerceInstalled($dbParams, $message)) {
 
             $requirements['lc_already_installed'] = array(
-                'description' => st('The installed LiteCommerce software found. It means that LiteCommerce will not be installed.'),
-                'severity' => REQUIREMENT_WARNING
+                'title'       => 'Installation status',
+                'value'       => st('The installed LiteCommerce software found. It means that LiteCommerce will not be installed.'),
+                'description' => $message,
+                'severity'    => REQUIREMENT_WARNING
             );
         
         } else {

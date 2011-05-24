@@ -10,7 +10,6 @@
  * @author    Creative Development LLC <info@cdev.ru>
  * @copyright Copyright (c) 2010 Creative Development LLC <info@cdev.ru>. All rights reserved
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
- * @version   SVN: $Id$
  * @link      http://www.litecommerce.com/
  * @see       ____file_see____
  * @since     1.0.0
@@ -355,6 +354,43 @@ function lc_connector_url_outbound_alter(&$path, array &$options, $original_path
 }
 
 /**
+ * Alters inbound URLs
+ *
+ * @param string &$path         Path
+ * @param string $original_path Original path
+ * @param string $path_language Path language
+ *
+ * @hook   url_inbound_alter
+ * @return void
+ * @see    ____func_see____
+ * @since  1.0.0
+ */
+function lc_connector_url_inbound_alter(&$path, $original_path, $path_language)
+{
+    LCConnector_Handler::callSafely(
+        'Module',
+        'translateInboundURL',
+        array(&$path, $original_path, $path_language)
+    );
+}
+
+/**
+ * Process cron tasks
+ *
+ * @hook   cron
+ * @return void
+ * @see    ____func_see____
+ * @since  1.0.0
+ */
+function lc_connector_cron()
+{
+    LCConnector_Handler::callSafely(
+        'Module',
+        'runCronTasks'
+    );
+}
+
+/**
  * Returns lc_connector specific permissions
  *
  * @hook   permission
@@ -363,11 +399,11 @@ function lc_connector_url_outbound_alter(&$path, array &$options, $original_path
  * @since  1.0.0
  */
 function lc_connector_permission() {
-  return array(
-    'lc admin' => array(
-      'title' => t('LiteCommerce administrator'),
-    ),
-  );
+    return array(
+        'lc admin' => array(
+            'title' => t('LiteCommerce administrator'),
+        ),
+    );
 }
 
 /**
@@ -471,5 +507,35 @@ function lc_connector_user_admin_permissions_submit($form, &$form_state)
     $roles = user_roles();
 
     return LCConnector_Handler::callSafely('Profile', 'performAction', array('updateRoles', &$roles, new \stdClass(), null));
+}
+
+/**
+ * Update variables array passed to the template
+ *  
+ * @param array &$variables Array of variables
+ *
+ * @hook   template_process_page
+ * @return void
+ * @see    ____func_see____
+ * @since  1.0.0
+ */
+function lc_connector_process_page(&$variables)
+{
+    LCConnector_Handler::callSafely('Controller', 'updateTemplateVars', array(&$variables));
+}
+
+/**
+ * Update meta tags array passed to the template
+ *  
+ * @param array &$elements Array of meta tags
+ *
+ * @hook   html_head_alter
+ * @return void
+ * @see    ____func_see____
+ * @since  1.0.0
+ */
+function lc_connector_html_head_alter(&$elements)
+{
+    LCConnector_Handler::callSafely('Controller', 'updateMetaTags', array(&$elements));
 }
 

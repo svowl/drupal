@@ -9,7 +9,6 @@
  * @author    Creative Development LLC <info@cdev.ru>
  * @copyright Copyright (c) 2010 Creative Development LLC <info@cdev.ru>. All rights reserved
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
- * @version   SVN: $Id$
  * @link      http://www.litecommerce.com/
  * @see       ____file_see____
  * @since     1.0.0
@@ -668,7 +667,7 @@ blockquote .quote-author em
  */
 
 ul,
-ol,
+ol
 {
   padding-left: 0;
   margin-left: 0;
@@ -844,8 +843,9 @@ ul.inline li
 {
   padding: 0;
   margin: 0;
-  height: 46px;
-  line-height: 46px;
+  height: 38px;
+  line-height: 38px;
+  display: inline;
 }
 
 #header-bar ul.account-links li
@@ -858,12 +858,16 @@ ul.inline li
 
 #header-bar ul.account-links a
 {
-  text-decoration: none;
+  font-size: 14px;
 }
 
 #header-bar ul.account-links a:hover
 {
   text-decoration: underline;
+}
+
+.greeting-message span {
+  color: #8e8e8e;
 }
 
 /* Popup forms */
@@ -1238,24 +1242,45 @@ ul.inline li
   top: 1px;
 }
 
-div.location-node {
-  display: inline;
-  position: relative;
+ul.breadcrumb {
+  list-style: none;
 }
 
-div.location-node:hover ul.location-subnodes {
+ul.breadcrumb li.location-node {
+  float: left;
+  background: transparent none;
+  position: relative;
+  padding-left: 0px;
+  margin: 2px 0 0;
+}
+
+ul.breadcrumb li.location-node a,
+  ul.breadcrumb li.location-node span
+{
+  line-height: 24px;
+}
+
+ul.breadcrumb li.location-node span.separator {
+  line-height: 20px;
+}
+
+ul.breadcrumb li:first-child {
+  margin: 0px;
+}
+
+li.location-node:hover ul.location-subnodes {
   visibility: visible;
 }
 
-div.location-node.expandable {
-  padding-right: 0.8em;
-  background: url(../images/down_arrow.png) no-repeat right 0.6em;
+ul.breadcrumb li.location-node.expandable {
+  padding-right: 0.9em;
+  background: url(../images/down_arrow.png) no-repeat right 0.9em;
 }
 
 ul.location-subnodes {
   position: absolute;
-  top: 15px;
-  right: 0px;
+  top: 20px;
+  left: 0px;
   list-style-type: none;
   background-color: #fff;
   z-index: 10000;
@@ -1267,6 +1292,10 @@ ul.location-subnodes li {
   background-image: none;
   padding: 0;
   white-space: nowrap;
+}
+
+ul.location-subnodes li a {
+  line-height: inherit;
 }
 
 .location-title-subnodes-mark {

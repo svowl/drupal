@@ -9,7 +9,6 @@
  * @author    Creative Development LLC <info@cdev.ru>
  * @copyright Copyright (c) 2010 Creative Development LLC <info@cdev.ru>. All rights reserved
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
- * @version   SVN: $Id$
  * @link      http://www.litecommerce.com/
  * @see       ____file_see____
  * @since     1.0.0
@@ -94,6 +93,7 @@ table#header-area
 	height: 90px;
   width: 100%;
   margin-top: -2px;
+  margin-bottom: 3px;
 }
 
 #header-area td
@@ -109,12 +109,12 @@ table#header-area
 }
 
 #header-area td#header-bar {
-  padding: 0px 20px 0px 0px;
-  float: left;
+  padding-top: 7px;
+  width: 100%;
 }
 
 #header-area td#header {
-  float: right;
+  padding-left: 18px;
 }
 
 #logo,
@@ -144,7 +144,7 @@ table#header-area
 
 #header .block
 {
-  float: left;
+  float: right;
 }
 
 #header .block .content

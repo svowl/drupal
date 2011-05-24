@@ -9,7 +9,6 @@
  * @author    Creative Development LLC <info@cdev.ru>
  * @copyright Copyright (c) 2010 Creative Development LLC <info@cdev.ru>. All rights reserved
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
- * @version   SVN: $Id: lc3.css 4903 2011-01-17 15:08:41Z max $
  * @link      http://www.litecommerce.com/
  * @see       ____file_see____
  * @since     1.0.0
@@ -1870,6 +1869,14 @@ form.estimator .main,
   padding: 15px 11px;
 }
 
+.checkout-block .disabled .step-box {
+  text-align: center;
+  color: #456583;
+  font-size: 16px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
 .checkout-block .shipping-step.current .step-box,
 .checkout-block .payment-step.current .step-box, 
 .checkout-block .review-step.current .step-box .box 
@@ -2373,16 +2380,36 @@ form.estimator .main,
   margin-right: 30px;
   margin-bottom: 20px;
   position: relative;
+  cursor: pointer;
 }
 
 .select-address ul.addresses li.last {
   margin-right: 0px;
 }
 
+.select-address ul.addresses li .remove {
+  position: absolute;
+  right: 7px;
+  top: 4px;
+  text-decoration: none;
+  width: 13px;
+  height: 13px;
+}
+
+.select-address ul.addresses li .remove img {
+  background: transparent url(../images/icon_cross_circle.png) no-repeat left top;
+  width: 13px;
+  height: 13px;
+}
+
+.select-address ul.addresses li .remove img:hover {
+  background-position: left -13px;
+}
+
 .select-address ul.addresses li .shipping {
   position: absolute;
   right: 8px;
-  top: 15px;
+  bottom: 15px;
   background: transparent url(../images/icon_shipping.png) no-repeat left top;
   width: 42px;
   height: 20px;
@@ -2391,7 +2418,7 @@ form.estimator .main,
 .select-address ul.addresses li .billing {
   position: absolute;
   right: 9px;
-  top: 47px;
+  bottom: 47px;
   background: transparent url(../images/icon_billing.png) no-repeat left top;
   width: 38px;
   height: 22px;
@@ -2434,7 +2461,11 @@ ul.location-subnodes {
 }
 
 ul.location-subnodes li {
-  padding: 3px;
+  padding: 0px 2px;
+}
+
+ul.location-subnodes li a.current {
+  font-weight: bold;
 }
 
 /**
