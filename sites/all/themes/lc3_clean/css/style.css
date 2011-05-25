@@ -9,7 +9,6 @@
  * @author    Creative Development LLC <info@cdev.ru>
  * @copyright Copyright (c) 2010 Creative Development LLC <info@cdev.ru>. All rights reserved
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
- * @version   SVN: $Id$
  * @link      http://www.litecommerce.com/
  * @see       ____file_see____
  * @since     1.0.0
@@ -844,8 +843,8 @@ ul.inline li
 {
   padding: 0;
   margin: 0;
-  height: 46px;
-  line-height: 46px;
+  height: 38px;
+  line-height: 38px;
   display: inline;
 }
 
@@ -859,7 +858,7 @@ ul.inline li
 
 #header-bar ul.account-links a
 {
-  text-decoration: none;
+  font-size: 14px;
 }
 
 #header-bar ul.account-links a:hover
