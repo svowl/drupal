@@ -550,6 +550,12 @@ function litecommerce_form_install_configure_form_submit($form, &$form_state) {
         variable_set($var, null);
     }
 
+    // Disable this installation profile module
+    db_update('system')
+        ->fields(array('status' => 0))
+        ->condition('type', 'module')
+        ->condition('name', 'litecommerce')
+        ->execute();
 }
 
 
