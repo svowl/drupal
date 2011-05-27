@@ -842,7 +842,7 @@ function _litecommerce_preconfigure_node()
         'node' => array(
             'type'      => 'page',
             'uid'       => 1,
-            'body'      => array(LANGUAGE_NONE => array(array('value' => 'asasa'))),
+            'body'      => array(LANGUAGE_NONE => array(array('value' => ''))),
             'comment'   => 1,
             'moderate'  => 0,
             'promote'   => 0,

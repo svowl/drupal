@@ -914,7 +914,9 @@ function drupal_http_request($url, array $options = array()) {
     return $result;
   }
   // Parse response headers from the response body.
-  list($response, $result->data) = explode("\r\n\r\n", $response, 2);
+  // Be tolerant of malformed HTTP responses that separate header and body with
+  // \n\n or \r\r instead of \r\n\r\n.
+  list($response, $result->data) = preg_split("/\r\n\r\n|\n\n|\r\r/", $response, 2);
   $response = preg_split("/\r\n|\n|\r/", $response);
 
   // Parse the response status line.
@@ -1973,7 +1975,7 @@ function _format_date_callback(array $matches = NULL, $new_langcode = NULL) {
 /**
  * Format a username.
  *
- * By default, the passed in object's 'name' property is used if it exists, or
+ * By default, the passed-in object's 'name' property is used if it exists, or
  * else, the site-defined value for the 'anonymous' variable. However, a module
  * may override this by implementing hook_username_alter(&$name, $account).
  *
@@ -2601,7 +2603,8 @@ function drupal_exit($destination = NULL) {
  *   A linear array.
  * @param $function
  *   A name of a function to apply to all values before output.
- * @result
+ *
+ * @return
  *   An associative array.
  */
 function drupal_map_assoc($array, $function = NULL) {
@@ -3947,10 +3950,15 @@ function drupal_add_js($data = NULL, $options = NULL) {
     // Add jquery.js and drupal.js, as well as the basePath setting, the
     // first time a JavaScript file is added.
     if (empty($javascript)) {
+      // url() generates the prefix using hook_url_outbound_alter(). Instead of
+      // running the hook_url_outbound_alter() again here, extract the prefix
+      // from url().
+      url('', array('prefix' => &$prefix));
       $javascript = array(
         'settings' => array(
           'data' => array(
             array('basePath' => base_path()),
+            array('pathPrefix' => empty($prefix) ? '' : $prefix),
           ),
           'type' => 'setting',
           'scope' => 'header',
@@ -5227,7 +5235,7 @@ function drupal_set_page_content($content = NULL) {
  *     browsers, '#browsers' can be set to array('IE' => 'gte IE 8').
  *
  * @return
- *   The passed in element with markup for conditional comments potentially
+ *   The passed-in element with markup for conditional comments potentially
  *   added to '#prefix' and '#suffix'.
  */
 function drupal_pre_render_conditional_comments($elements) {
@@ -5289,7 +5297,7 @@ function drupal_pre_render_conditional_comments($elements) {
  *   - #options: (optional) An array of options to pass to l().
  *
  * @return
- *   The passed in elements containing a rendered link in '#markup'.
+ *   The passed-in elements containing a rendered link in '#markup'.
  */
 function drupal_pre_render_link($element) {
   // By default, link options to pass to l() are normally set in #options.
@@ -5436,7 +5444,7 @@ function drupal_pre_render_links($element) {
  *   A structured array using the #markup key.
  *
  * @return
- *   The passed in elements, but #markup appended to #children.
+ *   The passed-in elements, but #markup appended to #children.
  */
 function drupal_pre_render_markup($elements) {
   $elements['#children'] = $elements['#markup'];
@@ -5567,9 +5575,9 @@ function drupal_render(&$elements) {
     return $cached_output;
   }
 
-  // If #markup is not empty, set #type. This allows to specify just #markup on
-  // an element without setting #type.
-  if (!empty($elements['#markup']) && !isset($elements['#type'])) {
+  // If #markup is set, ensure #type is set. This allows to specify just #markup
+  // on an element without setting #type.
+  if (isset($elements['#markup']) && !isset($elements['#type'])) {
     $elements['#type'] = 'markup';
   }
 
@@ -5900,7 +5908,7 @@ function drupal_render_collect_attached($elements, $return = FALSE) {
  *
  * @return
  *   A renderable array with the following keys and values:
- *   - #query: The passed in $query.
+ *   - #query: The passed-in $query.
  *   - #pre_render: $function with a _pre_render suffix.
  *   - #cache: An associative array prepared for drupal_render_cache_set().
  */
@@ -6307,7 +6315,7 @@ function drupal_array_set_nested_value(array &$array, array $parents, $value, $f
  *   The array from which to get the value.
  * @param $parents
  *   An array of parent keys of the value, starting with the outermost key.
- * @param &$key_exists
+ * @param $key_exists
  *   (optional) If given, an already defined variable that is altered by
  *   reference.
  *
@@ -6917,12 +6925,18 @@ function drupal_write_record($table, &$record, $primary_keys = array()) {
  * @see drupal_parse_info_format()
  */
 function drupal_parse_info_file($filename) {
-  if (!file_exists($filename)) {
-    return array();
-  }
+  $info = &drupal_static(__FUNCTION__, array());
 
-  $data = file_get_contents($filename);
-  return drupal_parse_info_format($data);
+  if (!isset($info[$filename])) {
+    if (!file_exists($filename)) {
+      $info[$filename] = array();
+    }
+    else {
+      $data = file_get_contents($filename);
+      $info[$filename] = drupal_parse_info_format($data);
+    }
+  }
+  return $info[$filename];
 }
 
 /**
@@ -7387,8 +7401,7 @@ function entity_create_stub_entity($entity_type, $ids) {
 /**
  * Load entities from the database.
  *
- * This function should be used whenever you need to load more than one entity
- * from the database. The entities are loaded into memory and will not require
+ * The entities are stored in a static memory cache, and will not require
  * database access if loaded again during the same page request.
  *
  * The actual loading is done through a class that has to implement the
@@ -7483,8 +7496,15 @@ function entity_get_controller($entity_type) {
  *   The type of entity, i.e. 'node', 'user'.
  * @param $entities
  *   The entity objects which are being prepared for view, keyed by object ID.
+ * @param $langcode
+ *   (optional) A language code to be used for rendering. Defaults to the global
+ *   content language of the current request.
  */
-function entity_prepare_view($entity_type, $entities) {
+function entity_prepare_view($entity_type, $entities, $langcode = NULL) {
+  if (!isset($langcode)) {
+    $langcode = $GLOBALS['language_content']->language;
+  }
+
   // To ensure hooks are only run once per entity, check for an
   // entity_view_prepared flag and only process items without it.
   // @todo: resolve this more generally for both entity and field level hooks.
@@ -7500,7 +7520,7 @@ function entity_prepare_view($entity_type, $entities) {
   }
 
   if (!empty($prepare)) {
-    module_invoke_all('entity_prepare_view', $prepare, $entity_type);
+    module_invoke_all('entity_prepare_view', $prepare, $entity_type, $langcode);
   }
 }
 
@@ -7575,7 +7595,7 @@ function entity_label($entity_type, $entity) {
   $label = FALSE;
   $info = entity_get_info($entity_type);
   if (isset($info['label callback']) && function_exists($info['label callback'])) {
-    $label = $info['label callback']($entity);
+    $label = $info['label callback']($entity, $entity_type);
   }
   elseif (!empty($info['entity keys']['label']) && isset($entity->{$info['entity keys']['label']})) {
     $label = $entity->{$info['entity keys']['label']};

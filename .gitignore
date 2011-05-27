@@ -1,4 +1,9 @@
-/dev_install.php
-/sites/default/files/
-/sites/default/settings.php
-/nbproject/private/
+# Ignore configuration files that may contain sensitive information.
+sites/*/settings*.php
+
+# Ignore paths that contain user-generated content.
+sites/*/files
+sites/*/private
+
+# Ignore development installation script
+dev_install.php
