@@ -414,6 +414,14 @@ function litecommerce_software_install(&$install_state) {
             'function' => 'doBuildCache',
             'message' => st('Building cache. Pass 3'),
         );
+        $steps[] = array(
+            'function' => 'doBuildCache',
+            'message' => st('Building cache. Pass 4'),
+        );
+        $steps[] = array(
+            'function' => 'doBuildCache',
+            'message' => st('Building cache. Pass 5'),
+        );
 
         $operations = array();
 
