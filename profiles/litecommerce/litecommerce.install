@@ -10,7 +10,6 @@
  * @author        Creative Development LLC <info@cdev.ru>
  * @copyright Copyright (c) 2010 Creative Development LLC <info@cdev.ru>. All rights reserved
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
- * @version     SVN: $Id$
  * @link            http://www.litecommerce.com/
  * @see             ____file_see____
  * @since         1.0.0
@@ -22,7 +21,7 @@
  *
  * Perform actions to set up the site for this profile.
  */
-function litecommerce_install() 
+function litecommerce_install()
 {
     // Add text formats.
     $filtered_html_format = array(
@@ -254,7 +253,7 @@ function litecommerce_install()
     _litecommerce_blocks($default_theme);
 
     _litecommerce_preconfigure_variables();
-    
+
     // Insert default pre-defined node types into the database. For a complete
     // list of available node type attributes, refer to the node type API
     // documentation at: http://api.drupal.org/api/HEAD/function/hook_node_info.
@@ -505,7 +504,7 @@ function litecommerce_install()
 
 /**
  * LiteCommerce blocks installation
- * 
+ *
  * @return void
  * @see    ____func_see____
  * @since  1.0.0
@@ -733,8 +732,8 @@ function _litecommerce_blocks($default_theme)
 }
 
 /**
- * Preconfigure Drupal menu_links 
- * 
+ * Preconfigure Drupal menu_links
+ *
  * @return void
  * @see    ____func_see____
  * @since  1.0.0
@@ -748,7 +747,7 @@ function _litecommerce_preconfigure_menu_links()
         'title'       => 'Secondary menu',
         'description' => 'This menu is provided for secondary links menu and displayed at the bottom of pages',
     );
-    
+
     menu_save($menu);
 
     variable_set('menu_secondary_links_source', 'secondary-menu');
@@ -832,7 +831,7 @@ function _litecommerce_preconfigure_menu_links()
 
 /**
  * Preconfigure Drupal nodes
- * 
+ *
  * @return void
  * @see    ____func_see____
  * @since  1.0.0
@@ -841,10 +840,10 @@ function _litecommerce_preconfigure_node()
 {
     $default_values = array(
         'node' => array(
-            'type'      => 'page', 
+            'type'      => 'page',
             'uid'       => 1,
-            'body'      => array(LANGUAGE_NONE => array(array('value' => 'asasa'))),
-            'comment'   => 0,
+            'body'      => array(LANGUAGE_NONE => array(array('value' => ''))),
+            'comment'   => 1,
             'moderate'  => 0,
             'promote'   => 0,
             'revision'  => 1,
@@ -927,8 +926,8 @@ function _litecommerce_preconfigure_node()
 }
 
 /**
- * Setup some variables 
- * 
+ * Setup some variables
+ *
  * @return void
  * @see    ____func_see____
  * @since  1.0.0
@@ -978,7 +977,7 @@ function _litecommerce_preconfigure_variables()
     variable_set('menu_breadcrumb_menu_patterns', '/^book-toc-\d+$/Books/');
 
     variable_set('contact_form_information', '<p>Our friendly and helpful Customer Services team are here to help with any queries you might have.</p>');
-    
+
     variable_set('menu_block_ids', array(1));
     variable_set('menu_block_1_title_link', 0);
     variable_set('menu_block_1_admin_title', 'My account');

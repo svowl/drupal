@@ -350,8 +350,9 @@ Drupal.overlay.isAdminLink = function (url) {
 
   // Turn the list of administrative paths into a regular expression.
   if (!this.adminPathRegExp) {
-    var adminPaths = '^(' + Drupal.settings.overlay.paths.admin.replace(/\s+/g, ')$|^(') + ')$';
-    var nonAdminPaths = '^(' + Drupal.settings.overlay.paths.non_admin.replace(/\s+/g, ')$|^(') + ')$';
+    var regExpPrefix = '^' + Drupal.settings.pathPrefix + '(';
+    var adminPaths = regExpPrefix + Drupal.settings.overlay.paths.admin.replace(/\s+/g, ')$|' + regExpPrefix) + ')$';
+    var nonAdminPaths = regExpPrefix + Drupal.settings.overlay.paths.non_admin.replace(/\s+/g, ')$|'+ regExpPrefix) + ')$';
     adminPaths = adminPaths.replace(/\*/g, '.*');
     nonAdminPaths = nonAdminPaths.replace(/\*/g, '.*');
     this.adminPathRegExp = new RegExp(adminPaths);
@@ -452,7 +453,7 @@ Drupal.overlay.eventhandlerAlterDisplacedElements = function (event) {
 Drupal.overlay.eventhandlerRestoreDisplacedElements = function (event) {
   var $displacedElements = $('.overlay-displace-top, .overlay-displace-bottom');
   try {
-    $displacedElements.css({ maxWidth: null, clip: null });
+    $displacedElements.css({ maxWidth: '', clip: '' });
   }
   // IE bug that doesn't allow unsetting style.clip (http://dev.jquery.com/ticket/6512).
   catch (err) {
