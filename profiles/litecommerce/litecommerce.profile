@@ -395,7 +395,7 @@ function litecommerce_software_install(&$install_state) {
         );
         $steps[] = array(
             'function' => 'doRemoveCache',
-            'message' => st('Prepare for building cache'),
+            'message' => st('Prepared for building cache'),
         );
         $steps[] = array(
             'function' => 'doPrepareFixtures',
@@ -403,23 +403,23 @@ function litecommerce_software_install(&$install_state) {
         );
         $steps[] = array(
             'function' => 'doBuildCache',
-            'message' => st('Building cache. Pass 1'),
+            'message' => st('Building cache. Step #1 passed'),
         );
         $steps[] = array(
             'function' => 'doBuildCache',
-            'message' => st('Building cache. Pass 2'),
+            'message' => st('Building cache. Step #2 passed'),
         );
         $steps[] = array(
             'function' => 'doBuildCache',
-            'message' => st('Building cache. Pass 3'),
+            'message' => st('Building cache. Step #3 passed'),
         );
         $steps[] = array(
             'function' => 'doBuildCache',
-            'message' => st('Building cache. Pass 4'),
+            'message' => st('Building cache. Step #4 passed'),
         );
         $steps[] = array(
             'function' => 'doBuildCache',
-            'message' => st('Building cache. Pass 5'),
+            'message' => st('Building cache. Step #5 passed'),
         );
 
         $operations = array();
