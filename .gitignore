@@ -7,3 +7,4 @@ sites/*/private
 
 # Ignore development installation script
 dev_install.php
+/nbproject/
