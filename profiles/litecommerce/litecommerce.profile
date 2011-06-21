@@ -16,30 +16,41 @@
  */
 
 
-
-/**
- * XLITE_INSTALL_MODE constant indicates the installation process
+/*
+ * Common checking and settings of the litecommerce installation profile
  */
-define ('XLITE_INSTALL_MODE', 1);
+function _litecommerce_common_settings() {
 
-/**
- * LC_DO_NOT_REBUILD_CACHE constant prevents the automatical cache building when top.inc.php is reached
- */
-define('LC_DO_NOT_REBUILD_CACHE', true);
+    // Break installation if PHP version less than 5.3.0
+    if (version_compare(phpversion(), '5.3.0') < 0) {
+        die('LiteCommerce CMS cannot start on PHP version earlier than 5.3.0 (' . phpversion(). ' is currently used)');
+    }
+   
+    /**
+     * XLITE_INSTALL_MODE constant indicates the installation process
+     */
+    if (!defined('XLITE_INSTALL_MODE')) {
+        define ('XLITE_INSTALL_MODE', 1);
+    }
 
-global $conf;
+    /**
+     * LC_DO_NOT_REBUILD_CACHE constant prevents the automatical cache building when top.inc.php is reached
+     */
+    if (!defined('LC_DO_NOT_REBUILD_CACHE')) {
+        define('LC_DO_NOT_REBUILD_CACHE', true);
+    }
 
-$conf['theme_settings'] = array(
-    'default_logo' => 0,
-    'logo_path' => 'profiles/litecommerce/lc_logo.png',
-);
+    // Replace standard Drupal logo with Ecommerce CMS package logo image
+    global $conf;
 
-if (version_compare(phpversion(), '5.3.0') < 0) {
-    die('LiteCommerce CMS cannot start on PHP version earlier than 5.3.0 (' . phpversion(). ' is currently used)');
+    $conf['theme_settings'] = array(
+        'default_logo' => 0,
+        'logo_path' => 'profiles/litecommerce/lc_logo.png',
+    );
+
+    // Increase memoty_limit option value
+    _litecommerce_install_increase_memory_limit(128);
 }
-
-// Increase memoty_limit option value
-_litecommerce_install_increase_memory_limit(64);
 
 
 /**
@@ -88,6 +99,13 @@ function _litecommerce_install_tasks(&$install_state) {
  */
 function litecommerce_install_tasks_alter(&$tasks, $install_state) {
 
+    global $conf;
+
+    $conf['theme_settings'] = array(
+        'default_logo' => 0,
+        'logo_path' => 'profiles/litecommerce/lc_logo.png',
+    );
+
     $lcTasks = _litecommerce_install_tasks($install_state);
 
     $excludedTasks = array(
@@ -121,6 +139,9 @@ function litecommerce_install_tasks_alter(&$tasks, $install_state) {
 
 
 
+/*
+ * Set locale
+ */
 function litecommerce_preset_locale($install_state) {
     if ('en' != $install_state['parameters']['locale']) {
         $install_state['parameters']['locale'] = 'en';
@@ -555,15 +576,8 @@ function litecommerce_form_install_configure_form_submit($form, &$form_state) {
 
     // Reset service variables which were used during installation process
     foreach(array('lc_skip_installation', 'is_litecommerce_installed') as $var) {
-        variable_set($var, null);
+        variable_del($var);
     }
-
-    // Disable this installation profile module
-    db_update('system')
-        ->fields(array('status' => 0))
-        ->condition('type', 'module')
-        ->condition('name', 'litecommerce')
-        ->execute();
 }
 
 
@@ -574,6 +588,8 @@ function litecommerce_form_install_configure_form_submit($form, &$form_state) {
 function _litecommerce_include_lc_files() {
 
     $result = false;
+
+    _litecommerce_common_settings();
 
     $lc_install_file = detect_lc_connector_uri() . DIRECTORY_SEPARATOR . 'lc_connector.install';
 
@@ -627,8 +643,6 @@ function detect_lc_connector_uri($realpath = false) {
  */
 function _litecommerce_is_lc_installed() {
 
-//    $result = &drupal_static(__FUNCTION__, null);
-
     $result = null;
 
     if (!isset($result)) {
@@ -649,6 +663,8 @@ function _litecommerce_is_lc_installed() {
  * Prepare array of LiteCommerce setup parameters
  */
 function _litecommerce_get_setup_params() {
+
+    _litecommerce_common_settings();
 
     $lc_install_file = detect_lc_connector_uri() . DIRECTORY_SEPARATOR . 'lc_connector.install';
 
