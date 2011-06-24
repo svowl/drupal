@@ -24,32 +24,49 @@
  */
 abstract class LCConnector_Admin extends LCConnector_Abstract
 {
+    /*
+     * LC Connector settings form button label
+     */
+    const OP_NAME_SETTINGS = 'Save';
+
+
     /**
      * Return form description for the module settings
      *
      * @return array
-     * @access public
      * @see    ____func_see____
      * @since  1.0.0
      */
     public static function getModuleSettingsForm()
     {
-        $form = array(
+        variable_del('lc_user_sync_notify');
 
-            'settings' => array(
-                'lc_dir' => array(
-                    '#type'          => 'textfield',
-                    '#title'         => t('LiteCommerce installation dir'),
-                    '#required'      => true,
-                    '#default_value' => self::getLCDir(),
-                ),
+        $form['lcc'] = array();
 
-                '#type'  => 'fieldset',
-                '#title' => t('LC Connector module settings'),
+        if (variable_get('lc_dir', false) && !self::isLCExists()) {
+            drupal_set_message(t('LiteCommerce software not found in the specified directory'), 'error');
+        }
+
+        $form['lcc']['settings'] = array(
+            '#type'  => 'fieldset',
+            '#title' => t('LC Connector module settings'),
+ 
+            'lc_dir' => array(
+                '#type'          => 'textfield',
+                '#title'         => t('LiteCommerce installation directory'),
+                '#required'      => true,
+                '#default_value' => variable_get('lc_dir', self::getLCDir()),
+            ),
+            'submit' => array(
+                '#type' => 'submit',
+                '#value' => t(self::OP_NAME_SETTINGS),
             ),
         );
 
-        $form = system_settings_form($form);
+        self::callSafely('UserSync', 'addUserSyncForm', array(&$form));
+
+        $form['#validate'][] = 'lc_connector_validate_settings_form';
+
         $form['#submit'][] = 'lc_connector_submit_settings_form';
 
         // FIXME: it's the hack. See the "submitModuleSettingsForm" method.
@@ -61,18 +78,68 @@ abstract class LCConnector_Admin extends LCConnector_Abstract
     }
 
     /**
+     * Validate module settings form
+     *
+     * @param array &$form      Form description
+     * @param array &$formState Form state
+     *
+     * @return void
+     * @see    ____func_see____
+     * @since  1.0.0
+     */
+    public static function validateModuleSettingsForm(array &$form, array &$formState)
+    {
+        $message = null;
+
+        // Check if LiteCommerce exists in the specified directory
+        if (t(self::OP_NAME_SETTINGS) == $formState['values']['op']) {
+
+            if (!empty($formState['values']['lc_dir'])) {
+                
+                // Backup of lc_dir option
+                $lcDirOrig = variable_get('lc_dir');
+
+                // Set new value to lc_dir 
+                variable_set('lc_dir', $formState['values']['lc_dir']);
+
+                // Check if LC exists in directory specified by the options 'lc_dir'
+                if (!self::isLCExists()) {
+                    $message = t('LiteCommerce software not found in the specified directory (:dir)', array(':dir', $formState['values']['lc_dir']));
+                }
+
+                // Restore original value of lc_dir to allow submitModuleSettingsForm() method modify it
+                variable_set('lc_dir', $lcDirOrig);
+            }
+
+            if ($message) {
+                form_error($form['lcc']['settings']['lc_dir'], $message, 'error');
+            }
+        }
+    }
+
+    /**
      * Submit module settings form
      *
      * @param array &$form      Form description
      * @param array &$formState Form state
      *
      * @return void
-     * @access public
      * @see    ____func_see____
      * @since  1.0.0
      */
     public static function submitModuleSettingsForm(array &$form, array &$formState)
     {
-        menu_rebuild();
+        switch ($formState['values']['op']) {
+
+            case t(self::OP_NAME_SETTINGS):
+                variable_set('lc_dir', $formState['values']['lc_dir']);
+                drupal_set_message(t('The configuration options have been saved.'));
+                break;
+
+           default:
+                // Run user accounts synchronization routine
+                self::callSafely('UserSync', 'processUserSyncFormSubmit', array(&$form, &$formState));
+                break;
+        }
     }
 }
