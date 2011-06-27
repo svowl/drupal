@@ -60,32 +60,27 @@ function _litecommerce_install_tasks(&$install_state) {
 
     $install_state['license_confirmed'] = isset($install_state['license_confirmed']) || (isset($_COOKIE['lc']) && '1' == $_COOKIE['lc']);
 
-    if ('litecommerce_setup_form' == $install_state['active_task']) {
-        variable_set('is_litecommerce_installed', _litecommerce_is_lc_installed());
-    }    
-
-    $is_litecommerce_installed = variable_get('is_litecommerce_installed');
-
-    $params = _litecommerce_get_setup_params();
-    $is_setup_needed = !isset($params['setup_passed']);
+    // This call is needed to initialize setup parameters array as early as possible
+    _litecommerce_get_setup_params();
 
     $tasks = array(
         'litecommerce_preset_locale' => array(
-            'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+            'run' => INSTALL_TASK_RUN_IF_REACHED,
         ),
         'litecommerce_license_form' => array(
             'display_name' => st('License agreements'),
             'type' => 'form',
-            'run' => !empty($install_state['license_confirmed']) ? INSTALL_TASK_SKIP : INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+            'run' => !empty($install_state['license_confirmed']) ? INSTALL_TASK_SKIP : INSTALL_TASK_RUN_IF_REACHED,
         ),
         'litecommerce_setup_form' => array(
             'display_name' => st('Set up LiteCommerce'),
             'type' => 'form',
-            'run' => !$is_setup_needed ? INSTALL_TASK_SKIP : INSTALL_TASK_RUN_IF_REACHED,
+            'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
         ),
         'litecommerce_software_install' => array(
             'display_name' => st('Install LiteCommerce'),
             'type' => 'batch',
+            'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED
         ),
     );
 
@@ -511,10 +506,7 @@ function _litecommerce_software_install_batch($step, &$context) {
 function _litecommerce_software_install_finished($success, $results, $operations) {
 
     if (!$success) {
-        drupal_set_message(st('LiteCommerce installation failed.'));
-    
-    } else {
-        variable_set('is_litecommerce_installed', true);
+        drupal_set_message(st('LiteCommerce installation failed.'), 'error');
     }
 }
 
@@ -575,7 +567,7 @@ function litecommerce_form_install_configure_form_submit($form, &$form_state) {
     user_save($account);
 
     // Reset service variables which were used during installation process
-    foreach(array('lc_skip_installation', 'is_litecommerce_installed') as $var) {
+    foreach(array('lc_skip_installation', 'lc_setup_params') as $var) {
         variable_del($var);
     }
 }
@@ -643,17 +635,12 @@ function detect_lc_connector_uri($realpath = false) {
  */
 function _litecommerce_is_lc_installed() {
 
-    $result = null;
+    $result = false;
 
-    if (!isset($result)) {
-
-        if (_litecommerce_include_lc_files()) {
-
-            $params = _litecommerce_get_setup_params();
-            $message = null;
-
-            $result = isLiteCommerceInstalled($params, $message);
-        }
+    if (_litecommerce_include_lc_files()) {
+        $params = _litecommerce_get_setup_params();
+        $message = null;
+        $result = isLiteCommerceInstalled($params, $message);
     }
 
     return $result;
