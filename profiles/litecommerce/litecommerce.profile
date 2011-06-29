@@ -16,30 +16,41 @@
  */
 
 
-
-/**
- * XLITE_INSTALL_MODE constant indicates the installation process
+/*
+ * Common checking and settings of the litecommerce installation profile
  */
-define ('XLITE_INSTALL_MODE', 1);
+function _litecommerce_common_settings() {
 
-/**
- * LC_DO_NOT_REBUILD_CACHE constant prevents the automatical cache building when top.inc.php is reached
- */
-define('LC_DO_NOT_REBUILD_CACHE', true);
+    // Break installation if PHP version less than 5.3.0
+    if (version_compare(phpversion(), '5.3.0') < 0) {
+        die('LiteCommerce CMS cannot start on PHP version earlier than 5.3.0 (' . phpversion(). ' is currently used)');
+    }
+   
+    /**
+     * XLITE_INSTALL_MODE constant indicates the installation process
+     */
+    if (!defined('XLITE_INSTALL_MODE')) {
+        define ('XLITE_INSTALL_MODE', 1);
+    }
 
-global $conf;
+    /**
+     * LC_DO_NOT_REBUILD_CACHE constant prevents the automatical cache building when top.inc.php is reached
+     */
+    if (!defined('LC_DO_NOT_REBUILD_CACHE')) {
+        define('LC_DO_NOT_REBUILD_CACHE', true);
+    }
 
-$conf['theme_settings'] = array(
-    'default_logo' => 0,
-    'logo_path' => 'profiles/litecommerce/lc_logo.png',
-);
+    // Replace standard Drupal logo with Ecommerce CMS package logo image
+    global $conf;
 
-if (version_compare(phpversion(), '5.3.0') < 0) {
-    die('LiteCommerce CMS cannot start on PHP version earlier than 5.3.0 (' . phpversion(). ' is currently used)');
+    $conf['theme_settings'] = array(
+        'default_logo' => 0,
+        'logo_path' => 'profiles/litecommerce/lc_logo.png',
+    );
+
+    // Increase memoty_limit option value
+    _litecommerce_install_increase_memory_limit(128);
 }
-
-// Increase memoty_limit option value
-_litecommerce_install_increase_memory_limit(64);
 
 
 /**
@@ -49,32 +60,27 @@ function _litecommerce_install_tasks(&$install_state) {
 
     $install_state['license_confirmed'] = isset($install_state['license_confirmed']) || (isset($_COOKIE['lc']) && '1' == $_COOKIE['lc']);
 
-    if ('litecommerce_setup_form' == $install_state['active_task']) {
-        variable_set('is_litecommerce_installed', _litecommerce_is_lc_installed());
-    }    
-
-    $is_litecommerce_installed = variable_get('is_litecommerce_installed');
-
-    $params = _litecommerce_get_setup_params();
-    $is_setup_needed = !isset($params['setup_passed']);
+    // This call is needed to initialize setup parameters array as early as possible
+    _litecommerce_get_setup_params();
 
     $tasks = array(
         'litecommerce_preset_locale' => array(
-            'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+            'run' => INSTALL_TASK_RUN_IF_REACHED,
         ),
         'litecommerce_license_form' => array(
             'display_name' => st('License agreements'),
             'type' => 'form',
-            'run' => !empty($install_state['license_confirmed']) ? INSTALL_TASK_SKIP : INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+            'run' => !empty($install_state['license_confirmed']) ? INSTALL_TASK_SKIP : INSTALL_TASK_RUN_IF_REACHED,
         ),
         'litecommerce_setup_form' => array(
             'display_name' => st('Set up LiteCommerce'),
             'type' => 'form',
-            'run' => !$is_setup_needed ? INSTALL_TASK_SKIP : INSTALL_TASK_RUN_IF_REACHED,
+            'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
         ),
         'litecommerce_software_install' => array(
             'display_name' => st('Install LiteCommerce'),
             'type' => 'batch',
+            'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED
         ),
     );
 
@@ -87,6 +93,13 @@ function _litecommerce_install_tasks(&$install_state) {
  * Extends the tasks list with the profile specific tasks
  */
 function litecommerce_install_tasks_alter(&$tasks, $install_state) {
+
+    global $conf;
+
+    $conf['theme_settings'] = array(
+        'default_logo' => 0,
+        'logo_path' => 'profiles/litecommerce/lc_logo.png',
+    );
 
     $lcTasks = _litecommerce_install_tasks($install_state);
 
@@ -121,6 +134,9 @@ function litecommerce_install_tasks_alter(&$tasks, $install_state) {
 
 
 
+/*
+ * Set locale
+ */
 function litecommerce_preset_locale($install_state) {
     if ('en' != $install_state['parameters']['locale']) {
         $install_state['parameters']['locale'] = 'en';
@@ -490,10 +506,7 @@ function _litecommerce_software_install_batch($step, &$context) {
 function _litecommerce_software_install_finished($success, $results, $operations) {
 
     if (!$success) {
-        drupal_set_message(st('LiteCommerce installation failed.'));
-    
-    } else {
-        variable_set('is_litecommerce_installed', true);
+        drupal_set_message(st('LiteCommerce installation failed.'), 'error');
     }
 }
 
@@ -554,16 +567,9 @@ function litecommerce_form_install_configure_form_submit($form, &$form_state) {
     user_save($account);
 
     // Reset service variables which were used during installation process
-    foreach(array('lc_skip_installation', 'is_litecommerce_installed') as $var) {
-        variable_set($var, null);
+    foreach(array('lc_skip_installation', 'lc_setup_params') as $var) {
+        variable_del($var);
     }
-
-    // Disable this installation profile module
-    db_update('system')
-        ->fields(array('status' => 0))
-        ->condition('type', 'module')
-        ->condition('name', 'litecommerce')
-        ->execute();
 }
 
 
@@ -574,6 +580,8 @@ function litecommerce_form_install_configure_form_submit($form, &$form_state) {
 function _litecommerce_include_lc_files() {
 
     $result = false;
+
+    _litecommerce_common_settings();
 
     $lc_install_file = detect_lc_connector_uri() . DIRECTORY_SEPARATOR . 'lc_connector.install';
 
@@ -627,19 +635,12 @@ function detect_lc_connector_uri($realpath = false) {
  */
 function _litecommerce_is_lc_installed() {
 
-//    $result = &drupal_static(__FUNCTION__, null);
+    $result = false;
 
-    $result = null;
-
-    if (!isset($result)) {
-
-        if (_litecommerce_include_lc_files()) {
-
-            $params = _litecommerce_get_setup_params();
-            $message = null;
-
-            $result = isLiteCommerceInstalled($params, $message);
-        }
+    if (_litecommerce_include_lc_files()) {
+        $params = _litecommerce_get_setup_params();
+        $message = null;
+        $result = isLiteCommerceInstalled($params, $message);
     }
 
     return $result;
@@ -649,6 +650,8 @@ function _litecommerce_is_lc_installed() {
  * Prepare array of LiteCommerce setup parameters
  */
 function _litecommerce_get_setup_params() {
+
+    _litecommerce_common_settings();
 
     $lc_install_file = detect_lc_connector_uri() . DIRECTORY_SEPARATOR . 'lc_connector.install';
 
