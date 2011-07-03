@@ -25,7 +25,11 @@ function _litecommerce_common_settings() {
     if (version_compare(phpversion(), '5.3.0') < 0) {
         die('LiteCommerce CMS cannot start on PHP version earlier than 5.3.0 (' . phpversion(). ' is currently used)');
     }
-   
+
+    if (!defined('DRUPAL_CMS_INSTALL_MODE')) {
+        define('DRUPAL_CMS_INSTALL_MODE', 1);
+    }
+
     /**
      * XLITE_INSTALL_MODE constant indicates the installation process
      */
