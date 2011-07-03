@@ -317,7 +317,7 @@ function litecommerce_setup_form($form, &$form_state, &$install_state) {
             '#type' => 'fieldset',
             '#title' => st('LiteCommerce installation settings'),
             '#collapsible' => FALSE,
-            '#description' => st('LiteCommerce software will be installed in the directory <i>:lcdir</i> <br />Please choose the installation options below and continue.<br /><br />', array(':lcdir' => lc_connector_get_litecommerce_dir())),
+            '#description' => st('LiteCommerce software will be installed in the directory <i>:lcdir</i> <br />Please choose the installation options below and continue.<br /><br />', array(':lcdir' => _litecommerce_get_litecommerce_dir())),
             '#weight' => 10,
         );
 
@@ -505,6 +505,33 @@ function _litecommerce_software_install_batch($step, &$context) {
 }
 
 /**
+ * Detect the LiteCommerce directory
+ * Returns a absolute path of a directory or null if not found
+ *
+ * @return string
+ * @since  1.0.0
+ */
+function _litecommerce_get_litecommerce_dir() {
+    $result = NULL;
+
+    if (LCConnector_Install::isLCExists()) {
+        $result = LCConnector_Install::getLCCanonicalDir();
+
+    } else {
+        drupal_set_message(
+            st(
+                'Installation cannot proceed because of LiteCommerce software not found. '
+                . 'LiteCommerce software is a part of Ecommerce CMS package and it must be located '
+                . 'within LC connector module directory.'
+            ),
+            'error'
+        );
+    }
+
+    return $result;
+}
+
+/**
  * Finish the LiteCommerce installation batch process
  */
 function _litecommerce_software_install_finished($success, $results, $operations) {
@@ -582,25 +609,10 @@ function litecommerce_form_install_configure_form_submit($form, &$form_state) {
  * Checks availability and includes LiteCommerce installation scripts
  */
 function _litecommerce_include_lc_files() {
-
-    $result = false;
-
     _litecommerce_common_settings();
 
-    $lc_install_file = detect_lc_connector_uri() . DIRECTORY_SEPARATOR . 'lc_connector.install';
-
-    if (file_exists($lc_install_file)) {
-
-        require_once $lc_install_file;
-
-        $errorMsg = LCConnector_Install::includeLCFiles();
-
-        if (!empty($errorMsg)) {
-            drupal_set_message(st('Failed to include LiteCommerce files'), 'error');
-        
-        } else {
-            $result = true;
-        }
+    if (!($result = LCConnector_Install::includeLCFiles())) {
+        drupal_set_message(st('LiteCommerce software not found'), 'error');
     }
     
     return $result;
@@ -654,25 +666,23 @@ function _litecommerce_is_lc_installed() {
  * Prepare array of LiteCommerce setup parameters
  */
 function _litecommerce_get_setup_params() {
-
     _litecommerce_common_settings();
 
-    $lc_install_file = detect_lc_connector_uri() . DIRECTORY_SEPARATOR . 'lc_connector.install';
+    $lc_install_file = detect_lc_connector_uri() . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Install.php';
 
     if (file_exists($lc_install_file)) {
-
         require_once $lc_install_file;
+    }
 
-        $params = variable_get('lc_setup_params');
-
-        $dbParams = lc_connector_get_database_params();
+    if (class_exists('LCConnector_Install')) {
+        $dbParams = LCConnector_Install::getDatabaseParams();
+        $params   = variable_get('lc_setup_params');
 
         if (empty($params) && !empty($dbParams)) {
-
             $params = $dbParams;
 
-            $url = parse_url(lc_connector_detect_drupal_baseurl() . '/modules/lc_connector/litecommerce');
-            $params['xlite_http_host'] = $url['host'] . (!empty($url['port']) ? ':' . $url['port'] : '');
+            $url = parse_url(LCConnector_Install::getDrupalBaseURL() . '/modules/lc_connector/litecommerce');
+            $params['xlite_http_host'] = $url['host'] . (empty($url['port']) ? '' : (':' . $url['port']));
             $params['xlite_web_dir'] = $url['path'];
         }
     
