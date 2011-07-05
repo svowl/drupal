@@ -1,28 +1,27 @@
 <?php
-// vim: set ts=4 sw=4 sts=4 et:
+// vim: set ts=4 sw=4 sts=4 et ft=php:
 
 /**
  * @file
  * Ecommerce CMS installation profile
  *
- * @category    Litecommerce connector
- * @package     Litecommerce connector
- * @author        Creative Development LLC <info@cdev.ru>
+ * @category  Litecommerce install profile
+ * @package   Litecommerce install profile
+ * @author    Creative Development LLC <info@cdev.ru>
  * @copyright Copyright (c) 2010 Creative Development LLC <info@cdev.ru>. All rights reserved
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
- * @link            http://www.litecommerce.com/
- * @see             ____file_see____
- * @since         1.0.0
+ * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
+ * @link      http://www.litecommerce.com/
+ * @since     1.0.0
  */
-
 
 /**
- * Implements hook_install().
- *
  * Perform actions to set up the site for this profile.
+ *
+ * @hook   install
+ * @return void
+ * @since  1.0.0
  */
-function litecommerce_install()
-{
+function litecommerce_install() {
     // Add text formats.
     $filtered_html_format = array(
         'format' => 'filtered_html',
@@ -125,123 +124,123 @@ function litecommerce_install()
     $values = array(
         array(
             'module' => 'system',
-            'delta' => 'main',
-            'theme' => $default_theme,
+            'delta'  => 'main',
+            'theme'  => $default_theme,
             'status' => 1,
             'weight' => -14,
             'region' => 'content',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'search',
-            'delta' => 'form',
-            'theme' => $default_theme,
+            'delta'  => 'form',
+            'theme'  => $default_theme,
             'status' => 0,
             'weight' => -1,
             'region' => 'sidebar_first',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'node',
-            'delta' => 'recent',
-            'theme' => $admin_theme,
+            'delta'  => 'recent',
+            'theme'  => $admin_theme,
             'status' => 1,
             'weight' => 10,
             'region' => 'dashboard_main',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'user',
-            'delta' => 'login',
-            'theme' => $default_theme,
+            'delta'  => 'login',
+            'theme'  => $default_theme,
             'status' => 0,
             'weight' => 0,
             'region' => 'sidebar_first',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'system',
-            'delta' => 'navigation',
-            'theme' => $default_theme,
+            'delta'  => 'navigation',
+            'theme'  => $default_theme,
             'status' => 0,
             'weight' => 0,
             'region' => 'sidebar_first',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'system',
-            'delta' => 'powered-by',
-            'theme' => $default_theme,
+            'delta'  => 'powered-by',
+            'theme'  => $default_theme,
             'status' => 0,
             'weight' => 10,
             'region' => 'footer',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'system',
-            'delta' => 'help',
-            'theme' => $default_theme,
+            'delta'  => 'help',
+            'theme'  => $default_theme,
             'status' => 1,
             'weight' => 0,
             'region' => 'help',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'system',
-            'delta' => 'main',
-            'theme' => $admin_theme,
+            'delta'  => 'main',
+            'theme'  => $admin_theme,
             'status' => 1,
             'weight' => 0,
             'region' => 'content',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'system',
-            'delta' => 'help',
-            'theme' => $admin_theme,
+            'delta'  => 'help',
+            'theme'  => $admin_theme,
             'status' => 1,
             'weight' => 0,
             'region' => 'help',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'user',
-            'delta' => 'login',
-            'theme' => $admin_theme,
+            'delta'  => 'login',
+            'theme'  => $admin_theme,
             'status' => 1,
             'weight' => 10,
             'region' => 'content',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'user',
-            'delta' => 'new',
-            'theme' => $admin_theme,
+            'delta'  => 'new',
+            'theme'  => $admin_theme,
             'status' => 1,
             'weight' => 0,
             'region' => 'dashboard_sidebar',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
         array(
             'module' => 'search',
-            'delta' => 'form',
-            'theme' => $admin_theme,
+            'delta'  => 'form',
+            'theme'  => $admin_theme,
             'status' => 1,
             'weight' => -10,
             'region' => 'dashboard_sidebar',
-            'pages' => '',
-            'cache' => -1,
+            'pages'  => '',
+            'cache'  => -1,
         ),
     );
     $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
@@ -259,22 +258,22 @@ function litecommerce_install()
     // documentation at: http://api.drupal.org/api/HEAD/function/hook_node_info.
     $types = array(
         array(
-            'type' => 'page',
-            'name' => st('Basic page'),
-            'base' => 'node_content',
+            'type'        => 'page',
+            'name'        => st('Basic page'),
+            'base'        => 'node_content',
             'description' => st("Use <em>basic pages</em> for your static content, such as an 'About us' page."),
-            'custom' => 1,
-            'modified' => 1,
-            'locked' => 0,
+            'custom'      => 1,
+            'modified'    => 1,
+            'locked'      => 0,
         ),
         array(
-            'type' => 'article',
-            'name' => st('Article'),
-            'base' => 'node_content',
+            'type'        => 'article',
+            'name'        => st('Article'),
+            'base'        => 'node_content',
             'description' => st('Use <em>articles</em> for time-sensitive content like news, press releases or blog posts.'),
-            'custom' => 1,
-            'modified' => 1,
-            'locked' => 0,
+            'custom'      => 1,
+            'modified'    => 1,
+            'locked'      => 0,
         ),
     );
 
@@ -289,15 +288,15 @@ function litecommerce_install()
     // Insert default pre-defined RDF mapping into the database.
     $rdf_mappings = array(
         array(
-            'type' => 'node',
-            'bundle' => 'page',
+            'type'    => 'node',
+            'bundle'  => 'page',
             'mapping' => array(
                 'rdftype' => array('foaf:Document'),
             ),
         ),
         array(
-            'type' => 'node',
-            'bundle' => 'article',
+            'type'    => 'node',
+            'bundle'  => 'article',
             'mapping' => array(
                 'field_image' => array(
                     'predicates' => array('og:image', 'rdfs:seeAlso'),
@@ -343,15 +342,15 @@ function litecommerce_install()
     taxonomy_vocabulary_save($vocabulary);
 
     $field = array(
-        'field_name' => 'field_' . $vocabulary->machine_name,
-        'type' => 'taxonomy_term_reference',
+        'field_name'  => 'field_' . $vocabulary->machine_name,
+        'type'        => 'taxonomy_term_reference',
         // Set cardinality to unlimited for tagging.
         'cardinality' => FIELD_CARDINALITY_UNLIMITED,
-        'settings' => array(
+        'settings'    => array(
             'allowed_values' => array(
                 array(
                     'vocabulary' => $vocabulary->machine_name,
-                    'parent' => 0,
+                    'parent'     => 0,
                 ),
             ),
         ),
@@ -359,22 +358,22 @@ function litecommerce_install()
     field_create_field($field);
 
     $instance = array(
-        'field_name' => 'field_' . $vocabulary->machine_name,
+        'field_name'  => 'field_' . $vocabulary->machine_name,
         'entity_type' => 'node',
-        'label' => $vocabulary->name,
-        'bundle' => 'article',
+        'label'       => $vocabulary->name,
+        'bundle'      => 'article',
         'description' => $vocabulary->help,
-        'widget' => array(
-            'type' => 'taxonomy_autocomplete',
+        'widget'      => array(
+            'type'   => 'taxonomy_autocomplete',
             'weight' => -4,
         ),
         'display' => array(
             'default' => array(
-                'type' => 'taxonomy_term_reference_link',
+                'type'   => 'taxonomy_term_reference_link',
                 'weight' => 10,
             ),
             'teaser' => array(
-                'type' => 'taxonomy_term_reference_link',
+                'type'   => 'taxonomy_term_reference_link',
                 'weight' => 10,
             ),
         ),
@@ -505,12 +504,12 @@ function litecommerce_install()
 /**
  * LiteCommerce blocks installation
  *
+ * @param string $default_theme Default theme name
+ *
  * @return void
- * @see    ____func_see____
  * @since  1.0.0
  */
-function _litecommerce_blocks($default_theme)
-{
+function _litecommerce_blocks($default_theme) {
     $values = array(
         // Top categories block
         array(
@@ -717,8 +716,8 @@ function _litecommerce_blocks($default_theme)
         $record_block_custom = $bid + $record['block_custom'] + $block_custom_default_values;
         $query_block_custom->values($record_block_custom);
 
-        foreach ($record['block_lc_widget_settings'] as $settingName => $settingValue) {
-            $record_block_lc_widget_settings = $bid + array('name' => $settingName, 'value' => $settingValue);
+        foreach ($record['block_lc_widget_settings'] as $setting_name => $setting_value) {
+            $record_block_lc_widget_settings = $bid + array('name' => $setting_name, 'value' => $setting_value);
             $query_block_lc_widget_settings->values($record_block_lc_widget_settings);
         }
 
@@ -735,12 +734,10 @@ function _litecommerce_blocks($default_theme)
  * Preconfigure Drupal menu_links
  *
  * @return void
- * @see    ____func_see____
  * @since  1.0.0
  */
-function _litecommerce_preconfigure_menu_links()
-{
-    global $lc_nodes_values;
+function _litecommerce_preconfigure_menu_links() {
+    global $_litecommerce_nodes_values;
 
     $menu = array(
         'menu_name'   => 'secondary-menu',
@@ -802,7 +799,7 @@ function _litecommerce_preconfigure_menu_links()
 
     $menu_links[] = array(
         'menu_name'   => 'secondary-menu',
-        'link_path'   => sprintf('node/%d', $lc_nodes_values['terms-and-conditions']['nid']),
+        'link_path'   => sprintf('node/%d', $_litecommerce_nodes_values['terms-and-conditions']['nid']),
         'router_path' => 'node/%',
         'link_title'  => 'Terms & Conditions',
         'weight'      => 10,
@@ -810,7 +807,7 @@ function _litecommerce_preconfigure_menu_links()
 
     $menu_links[] = array(
         'menu_name'   => 'secondary-menu',
-        'link_path'   => sprintf('node/%d', $lc_nodes_values['privacy-policy']['nid']),
+        'link_path'   => sprintf('node/%d', $_litecommerce_nodes_values['privacy-policy']['nid']),
         'router_path' => 'node/%',
         'link_title'  => 'Privacy Policy',
         'weight'      => 20,
@@ -833,11 +830,9 @@ function _litecommerce_preconfigure_menu_links()
  * Preconfigure Drupal nodes
  *
  * @return void
- * @see    ____func_see____
  * @since  1.0.0
  */
-function _litecommerce_preconfigure_node()
-{
+function _litecommerce_preconfigure_node() {
     $default_values = array(
         'node' => array(
             'type'      => 'page',
@@ -855,9 +850,9 @@ function _litecommerce_preconfigure_node()
         ),
     );
 
-    global $lc_nodes_values;
+    global $_litecommerce_nodes_values;
 
-    $lc_nodes_values = array(
+    $_litecommerce_nodes_values = array(
         // 'Terms and Conditions' page node
         'terms-and-conditions' => array(
             'node' => array(
@@ -897,7 +892,7 @@ function _litecommerce_preconfigure_node()
                 'body'  => array(
                     LANGUAGE_NONE => array(
                         array(
-                            'value' => '<div class="page-not-found"><span>404</span></div><div class="page-not-found-links"><p>The page you\'re looking for was either moved or deleted.<br /> You can start from the <a href="' . lc_connector_detect_drupal_baseurl() . '">home  page</a>.</p></div>',
+                            'value' => '<div class="page-not-found"><span>404</span></div><div class="page-not-found-links"><p>The page you\'re looking for was either moved or deleted.<br /> You can start from the <a href="' . LCConnector_Install::getDrupalBaseURL() . '">home  page</a>.</p></div>',
                             'format' => 'full_html',
                         ),
                     ),
@@ -910,14 +905,14 @@ function _litecommerce_preconfigure_node()
 
     );
 
-    foreach ($lc_nodes_values as $key => $value) {
+    foreach ($_litecommerce_nodes_values as $key => $value) {
 
         // Prepare and save node
         $node = (object) ($value['node'] + $default_values['node']);
         node_save($node);
 
         // Get node Id
-        $nid = $lc_nodes_values[$key]['nid'] = $node->nid;
+        $nid = $_litecommerce_nodes_values[$key]['nid'] = $node->nid;
 
         // Prepare and save url alias for node
         $path = array('source' => sprintf('node/%d', $nid), 'language' => LANGUAGE_NONE) + $value['url_alias'];
@@ -929,15 +924,11 @@ function _litecommerce_preconfigure_node()
  * Setup some variables
  *
  * @return void
- * @see    ____func_see____
  * @since  1.0.0
  */
-function _litecommerce_preconfigure_variables()
-{
+function _litecommerce_preconfigure_variables() {
     // Set up variables
-
     variable_set('site_frontpage', 'store/main');
-
     variable_set('menu_expanded', array('primary-links'));
 
     $menu_breadcrumb_menus = variable_get('menu_breadcrumb_menus', array());
@@ -969,7 +960,7 @@ function _litecommerce_preconfigure_variables()
     );
 
     variable_set('menu_breadcrumb_menus', $menu_breadcrumb_menus);
-    variable_set('menu_breadcrumb_pattern_matches_rebuild', false);
+    variable_set('menu_breadcrumb_pattern_matches_rebuild', FALSE);
     variable_set('menu_breadcrumb_determine_menu', 1);
     variable_set('menu_breadcrumb_append_node_title', 1);
     variable_set('menu_breadcrumb_append_node_url', 0);
