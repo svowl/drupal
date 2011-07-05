@@ -1,5 +1,5 @@
 <?php
-// vim: set ts=4 sw=4 sts=4 et:
+// vim: set ts=4 sw=4 sts=4 et ft=php:
 
 /**
  * @file
@@ -739,7 +739,7 @@ function _litecommerce_is_lc_installed() {
 function _litecommerce_get_setup_params() {
     _litecommerce_common_settings();
 
-    $lc_install_file = detect_lc_connector_uri() . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Install.php';
+    $lc_install_file = detect_lc_connector_uri() . DIRECTORY_SEPARATOR . 'lc_connector.install';
 
     if (file_exists($lc_install_file)) {
         require_once $lc_install_file;

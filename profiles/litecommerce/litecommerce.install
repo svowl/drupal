@@ -1,5 +1,5 @@
 <?php
-// vim: set ts=4 sw=4 sts=4 et:
+// vim: set ts=4 sw=4 sts=4 et ft=php:
 
 /**
  * @file
@@ -892,7 +892,7 @@ function _litecommerce_preconfigure_node() {
                 'body'  => array(
                     LANGUAGE_NONE => array(
                         array(
-                            'value' => '<div class="page-not-found"><span>404</span></div><div class="page-not-found-links"><p>The page you\'re looking for was either moved or deleted.<br /> You can start from the <a href="' . lc_connector_detect_drupal_baseurl() . '">home  page</a>.</p></div>',
+                            'value' => '<div class="page-not-found"><span>404</span></div><div class="page-not-found-links"><p>The page you\'re looking for was either moved or deleted.<br /> You can start from the <a href="' . LCConnector_Install::getDrupalBaseURL() . '">home  page</a>.</p></div>',
                             'format' => 'full_html',
                         ),
                     ),
