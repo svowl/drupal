@@ -26,7 +26,7 @@ function recreate_drupal_database()
 			$host = $db['host'];
 
 			if (!empty($db['unix_socket'])) {
-				$host = $host . '/' . $db['unix_socket'];
+				$host = $host . ':' . $db['unix_socket'];
 			
 			} elseif (!empty($db['port'])) {
 				$host = $host . ':' . $db['port'];
@@ -59,7 +59,7 @@ function recreate_drupal_database()
 				}
 
 			} else {
-				$errorMsg = "Cannot connect to MySQL server: host={$host}, user={$db['username']}";
+				$errorMsg = "Cannot connect to MySQL server: host={$host}, user={$db['username']}, database={$db['database']}";
 			}
 
 		} else {
