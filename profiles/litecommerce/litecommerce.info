@@ -1,8 +1,18 @@
+; Module manifest
+;
+; @category  Litecommerce install profile
+; @package   Litecommerce install profile
+; @author    Creative Development LLC <info@cdev.ru>
+; @copyright Copyright (c) 2011 Creative Development LLC <info@cdev.ru>. All rights reserved
+; @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
+; @link      http://www.litecommerce.com/
+; @since     1.0.0
+
 name = Ecommerce CMS
 description = Select this profile to enable the Drupal functionality as well as the LiteCommerce functionality and a new Drupal theme supporting LC3 widgets.
-distribution_name = Ecommerce CMS
-version = VERSION
-core = 7.x
+
+files[] = litecommerce.profile
+
 dependencies[] = block
 dependencies[] = color
 dependencies[] = comment
@@ -27,5 +37,6 @@ dependencies[] = file
 dependencies[] = rdf
 dependencies[] = lc_connector
 
-files[] = litecommerce.profile
-
+core = 7.x
+version = VERSION
+distribution_name = Ecommerce CMS

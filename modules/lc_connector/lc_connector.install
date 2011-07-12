@@ -1,5 +1,5 @@
 <?php
-// vim: set ts=4 sw=4 sts=4 et:
+// vim: set ts=4 sw=4 sts=4 et ft=php:
 
 /**
  * @file
@@ -8,23 +8,20 @@
  * @category  Litecommerce connector
  * @package   Litecommerce connector
  * @author    Creative Development LLC <info@cdev.ru>
- * @copyright Copyright (c) 2010 Creative Development LLC <info@cdev.ru>. All rights reserved
+ * @copyright Copyright (c) 2011 Creative Development LLC <info@cdev.ru>. All rights reserved
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
  * @link      http://www.litecommerce.com/
- * @see       ____file_see____
  * @since     1.0.0
  */
 
 /**
  * Module tables schema
- * 
+ *
  * @hook   schema
  * @return void
- * @see    ____func_see____
  * @since  1.0.0
  */
-function lc_connector_schema()
-{
+function lc_connector_schema() {
     return LCConnector_Install::getSchema();
 }
 
@@ -33,11 +30,9 @@ function lc_connector_schema()
  *
  * @hook   install
  * @return void
- * @see    ____func_see____
  * @since  1.0.0
  */
-function lc_connector_install()
-{
+function lc_connector_install() {
     LCConnector_Install::performInstall();
 }
 
@@ -46,129 +41,28 @@ function lc_connector_install()
  *
  * @hook   uninstall
  * @return void
- * @see    ____func_see____
  * @since  1.0.0
  */
-function lc_connector_uninstall()
-{
+function lc_connector_uninstall() {
     LCConnector_Install::performUninstall();
 }
 
 /**
- * Implementation of hook_requirements()
+ * Implementation hook_requirements()
+ *
+ * @param string $phase Installation type
  *
  * @hook   requirements
  * @return array
- * @see    ____func_see____
  * @since  1.0.0
  */
-function lc_connector_requirements($phase)
-{
+function lc_connector_requirements($phase) {
     return LCConnector_Install::checkRequirements($phase);
-}
-
-
-
-// --------------- FIXME: all of the code below must be revised -
-
-/**
- * Returns an array of database connection parameters
- *
- * @return array
- * @see    ____func_see____
- * @since  1.0.0
- */
-function lc_connector_get_database_params()
-{
-    $dbParams = &drupal_static(__FUNCTION__, null);
-
-    if (!isset($dbParams)) {
-
-        global $databases;
-
-        $dbParams = array();
-
-        $mysql = null;
-
-        if (!empty($databases['default']['default'])) {
-            $mysql = $databases['default']['default'];
-        
-        } elseif ('POST' == $_SERVER['REQUEST_METHOD'] && !empty($_POST['mysql'])) {
-            $mysql = $_POST['mysql'];
-            $mysql['driver'] = 'mysql';
-        }
-
-        if (!empty($mysql)) {
-
-            $dbParams['mysqluser'] = $mysql['username'];
-            $dbParams['mysqlpass'] = $mysql['password'];
-            $dbParams['mysqlhost'] = $mysql['host'];
-            $dbParams['mysqlport'] = isset($mysql['port']) ? $mysql['port'] : '';
-            $dbParams['mysqlsock'] = isset($mysql['unix_socket']) ? $mysql['unix_socket'] : '';
-            $dbParams['mysqlbase'] = $mysql['database'];
-
-            if (isset($mysql['db_prefix'])) {
-                $dbParams['drupal_prefix'] = $mysql['db_prefix'];
-
-            } elseif (isset($mysql['prefix'])) {
-                $dbParams['drupal_prefix'] = $mysql['prefix'];
-            }
-
-            $dbParams['driver'] = $mysql['driver'];
-        }
-    }
-
-    return $dbParams;
-}
-
-/**
- * Detect the LiteCommerce directory
- * Returns a absolute path of a directory or null if not found
- *
- * @return string
- * @see    ____func_see____
- * @since  1.0.0
- */
-function lc_connector_get_litecommerce_dir()
-{
-    $result = &drupal_static(__FUNCTION__, null);
-
-    if (!isset($result)) {
-
-        if (!LCConnector_Install::isLCExists()) {
-            drupal_set_message(st('Installation cannot proceed because of LiteCommerce software not found. LiteCommerce software is a part of Ecommerce CMS package and it must be located within LC connector module directory.'), 'error');
-        
-        } else {
-            $result = LCConnector_Install::getLCCanonicalDir();
-        }
-    }
-
-    return $result;
-}
-
-/**
- * Returns Drupal URL (original drupal_detect_baseurl() corrected to support aliases)
- */
-function lc_connector_detect_drupal_baseurl()
-{
-    $url = drupal_detect_baseurl();
-
-    if (preg_match('/\.php(.*)$/', basename($url))) {
-        $url = dirname($url);
-    }
-
-    if (!empty($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != $_SERVER['SERVER_NAME']) {
-        $parsedUrl = parse_url($url);
-        $url = str_replace($parsedUrl['host'], $_SERVER['HTTP_HOST'], $url);
-    }
-
-    return $url;
 }
 
 // Include some scripts if not loaded yet
 if (!class_exists('LCConnector_Install')) {
-    $currentDir = dirname(__FILE__);
-    require_once $currentDir . '/classes/Abstract.php';
-    require_once $currentDir . '/classes/Install.php';
+    $current_dir = dirname(__FILE__);
+    require_once $current_dir . '/classes/Abstract.php';
+    require_once $current_dir . '/classes/Install.php';
 }
-
