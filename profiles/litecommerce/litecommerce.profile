@@ -663,8 +663,10 @@ function litecommerce_form_install_configure_form_submit(array &$form, array &$f
 
     user_save($account);
 
-    // Finish LC installation: update config options, remove install.php, initialize auth key, send email notification
-    doFinishInstallation($params, true);
+    if (_litecommerce_include_lc_files()) {
+        // Finish LC installation: update config options, remove install.php, initialize auth key, send email notification
+        doFinishInstallation($params, true);
+    }
 
     // Reset service variables which were used during installation process
     foreach (array('lc_skip_installation', 'lc_setup_params') as $var) {
