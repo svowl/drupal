@@ -663,7 +663,7 @@ function litecommerce_form_install_configure_form_submit(array &$form, array &$f
 
     user_save($account);
 
-    if (_litecommerce_include_lc_files()) {
+    if (!defined('DEV_MODE') && _litecommerce_include_lc_files()) {
         // Finish LC installation: update config options, remove install.php, initialize auth key, send email notification
         doFinishInstallation($params, true);
     }
