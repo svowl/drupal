@@ -643,6 +643,7 @@ function litecommerce_form_install_configure_form_submit(array &$form, array &$f
     $params['site_name'] = trim($form_state['values']['site_name']); // Site name
     $params['site_mail'] = trim($form_state['values']['site_mail']); // Site e-mail
     $params['site_default_country'] = trim($form_state['values']['site_default_country']); // Site default country
+    $params['date_default_timezone'] = trim($form_state['values']['date_default_timezone']); // Default timezone
 
     variable_set('lc_setup_params', $params);
 
@@ -661,6 +662,11 @@ function litecommerce_form_install_configure_form_submit(array &$form, array &$f
     $account->passwd = $params['password'];
 
     user_save($account);
+
+    if (!defined('DEV_MODE') && _litecommerce_include_lc_files()) {
+        // Finish LC installation: update config options, remove install.php, initialize auth key, send email notification
+        doFinishInstallation($params, true);
+    }
 
     // Reset service variables which were used during installation process
     foreach (array('lc_skip_installation', 'lc_setup_params') as $var) {
