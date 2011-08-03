@@ -1,0 +1,6 @@
+[submodule "sites/all/themes/lc3_clean"]
+	path = sites/all/themes/lc3_clean
+	url = git@github.com:svowl/lc3_clean.git
+[submodule "modules/lc_connector"]
+	path = modules/lc_connector
+	url = git@github.com:svowl/lc_connector.git
